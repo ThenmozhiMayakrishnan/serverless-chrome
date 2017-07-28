@@ -1,3 +1,4 @@
+import printToPdfHandler from './handlers/printToPdf'
 import captureScreenshotHandler from './handlers/captureScreenshot'
 import userConfig from '../config'
 
@@ -42,7 +43,7 @@ export default {
   logging: false,
 
   // this is a function which will get executed after chrome has spawned
-  handler: captureScreenshotHandler,
+  handler: printToPdfHandler,
 
   // *** //
 

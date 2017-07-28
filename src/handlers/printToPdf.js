@@ -8,7 +8,7 @@ const defaultPrintOptions = {
   printBackground: true,
   scale: 1,
   paperWidth: 8.27, // aka A4
-  paperHeight: 11.69, // aka A4
+  paperHeight: 11.69445, // aka A4
   marginTop: 0,
   marginBottom: 0,
   marginLeft: 0,
@@ -31,8 +31,9 @@ function makePrintOptions (options = {}) {
   )
 }
 
-export async function printUrlToPdf (url, printOptions = {}) {
+export async function printUrlToPdf (url, printOptions = {}, waitTime) {
   const LOAD_TIMEOUT = (config && config.chrome.pageLoadTimeout) || 1000 * 60
+  waitTime = parseInt(waitTime) || 1000 * 2
   let result
 
   const [tab] = await Cdp.List()
@@ -68,7 +69,7 @@ export async function printUrlToPdf (url, printOptions = {}) {
         resolve()
       })
     })
-
+    await sleep(waitTime)
     // https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
     const pdf = await Page.printToPDF(printOptions)
     result = pdf.data
@@ -89,16 +90,15 @@ export async function printUrlToPdf (url, printOptions = {}) {
 }
 
 export default (async function printToPdfHandler (event) {
-  const { queryStringParameters: { url, ...printParameters } } = event
+  const { queryStringParameters: { url, delay, ...printParameters } } = event
   const printOptions = makePrintOptions(printParameters)
   let pdf
 
   log('Processing PDFification for', url, printOptions)
 
   const startTime = Date.now()
-
   try {
-    pdf = await printUrlToPdf(url, printOptions)
+    pdf = await printUrlToPdf(url, printOptions, delay)
   } catch (error) {
     console.error('Error printing pdf for', url, error)
     throw new Error('Unable to print pdf')

@@ -6,7 +6,7 @@ import got from 'got'
 import config from './config'
 import { log, psLookup, psKill } from './utils'
 
-const CHROME_PATH = process.env.CHROME_PATH && path.resolve(process.env.CHROME_PATH)
+const CHROME_PATH = '/usr/bin/google-chrome-unstable'
 const HEADLESS_URL = 'http://127.0.0.1:9222'
 const PROCESS_STARTUP_TIMEOUT = 1000 * 5
 
